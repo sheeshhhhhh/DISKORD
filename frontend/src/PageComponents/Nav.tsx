@@ -21,7 +21,7 @@ const Nav = () => {
             <div>
                 {user ? 
                 <Link className='text-md font-bold text-gray-800 bg-white py-[9px] px-[35px] rounded-full hover:text-indigo-500'
-                to={`/channels/${user?.id}`}>
+                to={`/channels/@me/Friends  `}>
                     Go Chat?
                 </Link>
                 :
@@ -29,7 +29,6 @@ const Nav = () => {
                 to={'/login'}>
                     Login
                 </Link>}
-                
             </div>
         </div>
     </div>

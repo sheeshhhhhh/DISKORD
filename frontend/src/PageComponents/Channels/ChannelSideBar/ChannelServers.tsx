@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import Direct_Message_Logo from '../../assets/Direct_Message_Logo.svg'
+import Direct_Message_Logo from '../../../assets/Direct_Message_Logo.svg'
 import { Link } from 'react-router-dom'
 import { Separator } from '@/components/ui/separator'
 import { userAuthContext } from '@/Context/AuthContext'
-import AddServerButton from './AddServer/AddServerButton'
+import AddServerButton from '../AddServer/AddServerButton'
 
 export type serversinfo = {
     id: number,
@@ -37,9 +37,9 @@ const ChannelServers = ({ handleServerModalOpen } : any) => {
     }, [])
 
   return (
-    <div className='flex flex-col gap-2 py-2 '>
+    <div className='flex flex-col gap-2 py-2 relative'>
         <div>
-            <Link to={'/channels/' + user.id} className='flex justify-center items-center'>
+            <Link to={'/channels/@me/Friends'} className='flex justify-center items-center'>
                 <img src={Direct_Message_Logo} className='bg-indigo-500 size-[48px] p-2  rounded-2xl' />
             </Link>
         </div>
@@ -50,10 +50,11 @@ const ChannelServers = ({ handleServerModalOpen } : any) => {
             return (
                 <div>
                     <Link className='flex justify-center items-center size-[50px]
-              rounded-full transition-all duration-500 hover:rounded-[16px]'
+              rounded-full hover:rounded-[16px] transition-all duration-500 '
                     to={'/channels/' + info.id}>
                         <img src={info.servericons} className='size-[48px] rounded-full hover:rounded-2xl' />
                     </Link>
+                    {/* make sure to do the animation of title showing up when hovered */}
                 </div>
             ) 
         })}

@@ -2,6 +2,7 @@ import express from 'express'
 import multer from 'multer'
 import crypto from 'crypto'
 
+
 import { pool } from "../DB/db.js"
 import { ensureAuthenticated } from '../utils/ensureAuthenticated.js'
 import handleError from '../utils/handleserverError.js'
@@ -53,6 +54,33 @@ router.post("/createServer", ensureAuthenticated, upload.single('serverIcons'), 
         handleError(res, "", 500, "error in the /createServer controller")
     } finally {
         client.release()
+    }
+})
+
+router.post("/CreateLink/:serverId", ensureAuthenticated, async(req, res) => {
+    try {
+        const { serverId } = req.params
+        const userid = req.user?.id
+
+        const get_server_owner = await pool.query(`
+                SELECT owner 
+                FROM servers
+                WHERE $1 = id;
+        `, [serverId])
+
+        if(userid !== get_server_owner.rows[0]) return handleError(res, "not the owner", 400)
+        const link = 'http://localhost:5000/invite/' +  crypto.randomBytes(10).toString('hex')
+        const create_serverlink = await pool.query(`
+                INSERT INTO serverlinks(link, server_id) 
+                VALUES ($1, $2)
+                RETURN link;
+        `, [serverId, link])
+
+        if(!create_serverlink.rows[0]) return handleError(res, "failed to createLink", 400)
+
+        req.status(200).json(create_serverlink.rows[0])
+    } catch (error) {
+        handleError(res, "", 500, "Error in the createLink/:serverId controller")
     }
 })
 

@@ -84,6 +84,12 @@
       after:flex-grow after:bg-stone-400
     }
 
+    .divider-col {
+      @apply mx-auto my-4 flex flex-col w-full items-center justify-evenly before:mr-4 before:block 
+      before:h-px before:flex-grow before:bg-stone-400 after:ml-4 after:block after:h-px 
+      after:flex-grow after:bg-stone-400
+    }
+
     .glassmorphism {
       @apply h-full w-full bg-gray-100 rounded-md bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-20 border border-gray-100
     }

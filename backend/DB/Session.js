@@ -3,7 +3,7 @@ import { pool } from './db.js'
 const createSession = async () => {
     try {
         const query = `
-            CREATE TABLE session (
+            CREATE TABLE IF NOT EXISTS session (
                 sid TEXT PRIMARY KEY,
                 sess JSON NOT NULL,
                 expire TIMESTAMP(6) NOT NULL

@@ -1,4 +1,5 @@
 import { pool } from './db.js'
+import createServerLink from './ServerLink.js'
 import createServers from './Servers.js'
 import createSession from './Session.js'
 
@@ -40,4 +41,5 @@ const createTables = async () => {
 
 createSession();
 createServers();
+createServerLink();
 createTables();

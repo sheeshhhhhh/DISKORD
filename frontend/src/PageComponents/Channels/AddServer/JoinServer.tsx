@@ -8,7 +8,7 @@ const JoinServer: React.FC<ModalProps> = ({handleModalNumber}) => {
     const [loading, setLoading] = useState<boolean>(false)
     const [notValid, setNotValid] = useState<boolean>(false)
 
-    
+    // join server is not yet implmented so make sure to have a link save in the data base to be copied to.
 
     const handleJoinServer = async () => {
         setLoading(true)

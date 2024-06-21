@@ -93,7 +93,7 @@ const CustomizeServer: React.FC<ModalProps> = ({ handleModalNumber }) => {
                 
                 <button onClick={(e) => handleCreateServer(e)}
                 className='bg-indigo-500 text-white text-base rounded-md px-4 py-[2px] font-bold h-[38px]'>
-                    Join Server
+                    Create Server
                 </button>
 
             </div>
