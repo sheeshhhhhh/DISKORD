@@ -45,6 +45,11 @@ router.post("/createServer", ensureAuthenticated, upload.single('serverIcons'), 
             VALUES ($1, $2);
         `, [create_server.rows[0].id, user?.id])
 
+        const inserGeneralChannel = await pool.query(`
+            INSERT INTO channels (server_id, created_by, name)
+            VALUES ($1, $2, $3);
+        `, [create_server.rows[0].id, user?.id, "General"])
+
         if(!create_server) return handleError(res, "Failed to create a server", 400)
         
         await client.query('COMMIT');
@@ -64,7 +69,7 @@ router.post("/CreateLink/:serverId", ensureAuthenticated, async(req, res) => {
 
         const get_server_owner = await pool.query(`
                 SELECT owner 
-                FROM servers
+                FROM id as servers
                 WHERE $1 = id;
         `, [serverId])
 
@@ -73,7 +78,7 @@ router.post("/CreateLink/:serverId", ensureAuthenticated, async(req, res) => {
         const create_serverlink = await pool.query(`
                 INSERT INTO serverlinks(link, server_id) 
                 VALUES ($1, $2)
-                RETURN link;
+                RETURNING link;
         `, [serverId, link])
 
         if(!create_serverlink.rows[0]) return handleError(res, "failed to createLink", 400)
@@ -124,6 +129,75 @@ router.post("/GetAll_Servers", ensureAuthenticated, async (req, res) => {
     } catch (error) {
         console.log(error.message)
         handleError(res, "internal server error!", 500, " /GetAll_Servers Controller: ")
+    }
+})
+
+router.get("/GetServer/:serverId", ensureAuthenticated, async(req, res) => {
+    try {
+        const { serverId } = req.params 
+        const userId = req.user?.id
+
+        const getServer = await pool.query(`
+            SELECT s.id, s.title, s.owner, s.headerPhoto, s.serverIcons, 
+                   CASE WHEN sm.user_id IS NOT NULL THEN true ELSE false END AS is_member,
+                   c.id AS channel_id, 
+                   c.name AS channel_name, 
+                   c.description AS channel_description
+            FROM servers s
+            LEFT JOIN Server_member sm ON s.id = sm.server_id AND sm.user_id = $1
+            LEFT JOIN channels c ON s.id = c.server_id
+            WHERE s.id = $2;
+        `, [userId, serverId])
+        const result = getServer.rows[0]
+
+        if(result.length === 0) return handleError(res, "Server Does not exist", 400)
+
+        const serverDetails = {
+            id: result.id,
+            title: result.title,
+            owner: result.owner,
+            headerPhoto: result.headerphoto,
+            serverIcons: result.servericons,
+            is_member: result.is_member,
+            channels: []
+        };
+
+        getServer.rows.forEach(row => {
+            if (row.channel_id) {
+                serverDetails.channels.push({
+                    id: row.channel_id,
+                    name: row.channel_name,
+                    description: row.channel_description
+                })
+            }
+        });
+
+        res.status(200).json(serverDetails)
+    } catch (error) {
+        console.log(error.message)
+        handleError(res, "", 500, "/GetServer/:serverId")
+    }   
+})
+
+router.post("/CreateChannel/:id", ensureAuthenticated, async (req, res) => {
+    try {
+        const { channeltype, channelname } = req.body // do later the types kase di pa nakalagay sa database
+        const { id } = req.params
+        const userid = req.user?.id
+
+        const createChannel = await pool.query(`
+            INSERT INTO channels (server_id, created_by, name)
+            VALUES ($1, $2, $3)
+            RETURNING id;
+        `, [id, userid, channelname])
+
+        const newChannelId = createChannel.rows[0].id;
+        if(!newChannelId) return handleError(res, "failed to create a server", 400)
+
+        res.status(200).json({ id: newChannelId})
+    } catch (error) {
+        console.log(error)
+        handleError(res, "", 500, "/CreateChannel/:id")
     }
 })
 

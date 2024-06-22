@@ -3,6 +3,7 @@ import { pool } from './db.js'
 const createServers = async () => {
     try {
 
+        // create the main server table
         await pool.query(`
             CREATE TABLE IF NOT EXISTS Servers (
                 id SERIAL PRIMARY KEY NOT NULL,
@@ -11,8 +12,9 @@ const createServers = async () => {
                 headerPhoto VARCHAR(255),
                 serverIcons VARCHAR(255)
             );
-        `) // do later the channels
-
+        `)
+        
+        // create the server_members table resposible for
         await pool.query(`
             CREATE TABLE IF NOT EXISTS Server_member (
                 server_id INTEGER REFERENCES servers(id) ON DELETE CASCADE,
@@ -21,7 +23,18 @@ const createServers = async () => {
             );
         `)
         
-        console.log("Succesfully created Server Table")
+        //creates te channel table
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS Channels (
+                id SERIAL PRIMARY KEY NOT NULL,
+                server_id INTEGER REFERENCES servers(id) ON DELETE CASCADE,
+                created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                name VARCHAR(40) NOT NULL,
+                description VARCHAR(255)
+            );
+        `)
+
+        console.log("Successfully created Servers table")
     } catch (error) {
         console.log("Error in creating Servers Table" + error.message)
     }

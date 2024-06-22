@@ -12,7 +12,7 @@ const Channels = () => {
       <ChannelsSideBar />
       <Routes>
         <Route path='@me/*' element={<PersonalChat />  } />
-        <Route path=':id' element={ <ChannelsChat />} />
+        <Route path=':id/*' element={ <ChannelsChat />} />
       </Routes>
     </div>
   )

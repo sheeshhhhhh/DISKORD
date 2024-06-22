@@ -9,7 +9,7 @@ const Friends = () => {
     const example: any[] = []
 
     return (
-        <div className='flex flex-col flex-1 max-w bg-darkgray '>
+        <div className='flex flex-col flex-1  bg-darkgray '>
             <div className='h-[48px] p-2 flex items-center justify-start border-b-[1px] border-gray-900'>
                 <div className='h-[31px]'>
                     <Me_logo />
