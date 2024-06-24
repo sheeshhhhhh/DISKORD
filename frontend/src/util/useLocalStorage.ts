@@ -13,7 +13,7 @@ export const useLocalStorage = <T,>(key: string) => {
     ]
 
 
-    const getItem = (setLoading: any): T | undefined =>{
+    const getItem = (): T | undefined =>{
         try {
             const item = window.localStorage.getItem(key)
            
@@ -25,8 +25,6 @@ export const useLocalStorage = <T,>(key: string) => {
 
         } catch (error) {
             console.log(error)
-        } finally {
-            setLoading(false)
         }
     }
 

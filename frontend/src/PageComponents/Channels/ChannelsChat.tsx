@@ -1,9 +1,8 @@
-import { User, userAuthContext } from '@/Context/AuthContext'
 import React, { useEffect, useState } from 'react'
 import { Link, Route, Routes, useLocation, useParams } from 'react-router-dom'
 import { MdKeyboardArrowDown } from "react-icons/md";
 import ChannelsMainChat from './ServerChannels/ChannelsMainChat';
-import { FaPlus } from 'react-icons/fa6';
+import { FaHashtag, FaPlus } from 'react-icons/fa6';
 import AddChannelsModal from './ServerChannels/AddChannelsModal';
 import lastelementofURL from '@/util/lastElementofURL';
 
@@ -29,6 +28,9 @@ const ChannelsChat = () => {
   const [channelselected, setChannelSelected] = useState<number>(0)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const { id } = useParams()
+  
+  const URL = useLocation()
+  const selectedchannel = lastelementofURL(URL)
 
   useEffect(() => {
     const getserverinfo = async () => {
@@ -45,16 +47,16 @@ const ChannelsChat = () => {
         console.log(error)
       }
     }
+    
     getserverinfo()
     setOpenModal(false) // so that modal won't be open when we change channels
   }, [id])
+ 
 
   const handleserverSetting = () => {
     // do later
   }
-
-  const URL = useLocation()
-  const selectedchannel = lastelementofURL(URL)
+  
 
   return (
     <div className='flex flex-row h-screen w-full'>
@@ -83,6 +85,7 @@ const ChannelsChat = () => {
                   key={channel.id}
                   className={`flex ml-2 w-full max-w-[220px] h-[32px] py-[1px] rounded-md px-2
                    items-center ${selected && 'bg-gray-700'}`}>
+                    <FaHashtag size={15} className={`text-gray-400 mr-2 ${selected && 'text-white'}`} />
                     <h2 className={`text-slate-400 font-semibold ${selected && 'text-white'}`}>{channel.name}</h2>
                   </Link>
                 )
@@ -92,7 +95,7 @@ const ChannelsChat = () => {
         <AddChannelsModal id={id} setOpenModal={setOpenModal}  open={openModal} />
       </div>
       <Routes>
-        <Route path=':channelid' element={<ChannelsMainChat  channel={server?.channels[channelselected]} />} />
+        <Route path=':channelid' element={<ChannelsMainChat id={id}  channels={server?.channels} />} />
       </Routes>
     </div>
   )

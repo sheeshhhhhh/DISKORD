@@ -34,6 +34,16 @@ const createServers = async () => {
             );
         `)
 
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS Messages (
+                id SERIAL PRIMARY KEY NOT NULL,
+                channel_id INTEGER REFERENCES channels(id) ON DELETE CASCADE,
+                user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+                content TEXT NOT NULL,
+                timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );    
+        `)
+
         console.log("Successfully created Servers table")
     } catch (error) {
         console.log("Error in creating Servers Table" + error.message)

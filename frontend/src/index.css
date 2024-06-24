@@ -106,6 +106,14 @@
     .custom-scrollbar::-webkit-scrollbar-track {
       background-color: transparent; /* Tailwind color gray-200 */
     }
+
+    .scrollbar-hide {
+      scrollbar-width: none;
+    }
+    
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
   }
 
   

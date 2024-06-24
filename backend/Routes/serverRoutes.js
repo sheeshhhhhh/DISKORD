@@ -37,7 +37,7 @@ router.post("/createServer", ensureAuthenticated, upload.single('serverIcons'), 
         const create_server = await pool.query(`
                 INSERT INTO Servers (title, HeaderPhoto, serverIcons, owner) 
                 VALUES ($1, $2, $3, $4)
-                RETURNING id, title, serverIcons, HeaderPhoto;
+                RETURNING id;
         `, [title, '', serverIconsLink, user?.id])
 
         const insertquery =  await pool.query(`
@@ -47,13 +47,17 @@ router.post("/createServer", ensureAuthenticated, upload.single('serverIcons'), 
 
         const inserGeneralChannel = await pool.query(`
             INSERT INTO channels (server_id, created_by, name)
-            VALUES ($1, $2, $3);
+            VALUES ($1, $2, $3)
+            RETURNING id AS ChannelId;
         `, [create_server.rows[0].id, user?.id, "General"])
 
-        if(!create_server) return handleError(res, "Failed to create a server", 400)
+        if(!create_server || !inserGeneralChannel) return handleError(res, "Failed to create a server", 400)
         
         await client.query('COMMIT');
-        res.status(200).json(create_server.rows[0])
+        res.status(200).json({
+            channelId: inserGeneralChannel.rows[0].channelid,
+            serverId: create_server.rows[0].id
+        })
     } catch (error) {
         console.log(error)
         handleError(res, "", 500, "error in the /createServer controller")
@@ -116,6 +120,7 @@ router.post("/GetAll_Servers", ensureAuthenticated, async (req, res) => {
         const query = `
             SELECT s.id, s.title, s.ServerIcons
             FROM servers s
+
             JOIN server_member sm ON s.id = sm.server_id 
             JOIN users u ON u.id = sm.user_id
             WHERE u.id = $1

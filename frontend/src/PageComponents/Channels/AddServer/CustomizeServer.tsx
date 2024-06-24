@@ -35,6 +35,7 @@ const CustomizeServer: React.FC<ModalProps> = ({ handleModalNumber }) => {
             if(data.error) throw new Error(data.error)
             
             // do not know what to put yet do later!!!
+            window.location.assign(`http://localhost:5173/channels/${data.serverId}/${data.channelId}`)
         } catch (error) {
             console.log("error in the handleCreateServer: ", error)
         } finally {

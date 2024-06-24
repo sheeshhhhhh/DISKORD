@@ -33,8 +33,8 @@ const AddChannelsModal: React.FC<AddChannelsModalType> = ({open, setOpenModal, i
             const data = await res.json()
 
             if(data.error) throw new Error(data.error)
-
-            window.location.assign("http://localhost:5173/channels/20/" + data.id)
+            console.log(data)
+            window.location.assign(`http://localhost:5173/channels/${id}/${data.id}`)
         } catch (error) {
             console.log(error)
         } finally {

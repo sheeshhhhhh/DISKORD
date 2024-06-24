@@ -23,7 +23,6 @@ const ChannelServers = ({ handleServerModalOpen } : any) => {
                     headers: {
                         'Content-Type' : 'application/json'
                     },
-                    body: JSON.stringify({ hello: "hello"}),
                     credentials: "include"
                 })
 
@@ -37,7 +36,7 @@ const ChannelServers = ({ handleServerModalOpen } : any) => {
     }, [])
 
   return (
-    <div className='flex flex-col gap-2 py-2 relative'>
+    <div className='flex flex-col gap-2 py-2 relative overflow-auto scrollbar-hide'>
         <div>
             <Link to={'/channels/@me/Friends'} className='flex justify-center items-center'>
                 <img src={Direct_Message_Logo} className='bg-indigo-500 size-[48px] p-2  rounded-2xl' />

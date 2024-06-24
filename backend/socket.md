@@ -1,0 +1,1 @@
+Make sure to use string or .toString number or id's becaues it can cause it to not work when joining rooms

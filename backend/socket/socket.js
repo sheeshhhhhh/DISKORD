@@ -2,6 +2,7 @@ import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
 
+
 const app = express()
 const server = createServer(app)
 
@@ -11,7 +12,6 @@ const server = createServer(app)
  * sender here in the backend
  */
 const io = new Server(server)
-
 // set userid and also get user id 
 // so that we can identify the connections in socket io that is user.id
 
@@ -30,7 +30,19 @@ io.on('connection', (socket) => {
 
     const userId = socket.handshake.query.userId // getting the userId through the first contact(handshake)
     if(userId !== undefined) userSocketMap[userId] = socket.id // adding the user to the userSocketMap with socked.id
-    socket.emit("hello", "tangna mo")
+
+    //ROOMS
+    socket.on('JoinRoom', room => {
+        // room name is base on channel id. all channel id is unique even though in different servers 
+        socket.join(room)
+        console.log(`${userId} joined room: ${room}`);
+    })
+
+    socket.on('LeaveRoom', room => {
+        socket.leave(room)
+        console.log(`${socket.id} left room: ${room}`);
+    })
+
 
     // when user disconnect this will  be triggered
     socket.on('disconnect',  () => {

@@ -24,6 +24,8 @@ dotenv.config()
 import authRoutes from './Routes/authRoutes.js'
 import serverRoutes from './Routes/serverRoutes.js'
 import userRoutes from './Routes/userRoutes.js'
+import messageRoutes from './Routes/messageRoutes.js'
+
 import connectPgSimple from 'connect-pg-simple'
 
 const PORT = process.env.PORT || 5000 
@@ -61,6 +63,7 @@ app.use('/uploads/serverIcons', express.static(__dirname + '/uploads/serverIcons
 app.use("/api/auth", authRoutes)
 app.use("/api/user", userRoutes)
 app.use("/api/server", serverRoutes)
+app.use("/api/message", messageRoutes)
 
 server.listen(PORT, () => {
     console.log(`server is now running on PORT ${PORT}`)
