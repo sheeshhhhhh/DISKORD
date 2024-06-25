@@ -14,11 +14,12 @@ const JoinServer: React.FC<ModalProps> = ({handleModalNumber}) => {
         setLoading(true)
 
         try {
-            const res:Response = await fetch(`http://localhost:5000/api/server/Join_Server/${serverLink}`, {
+            const res:Response = await fetch(`http://localhost:5000/api/server/Join_Server`, {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json'
                 },
+                body: JSON.stringify({serverlink: serverLink}),
                 credentials: 'include'
             })
 
@@ -26,8 +27,10 @@ const JoinServer: React.FC<ModalProps> = ({handleModalNumber}) => {
 
             if(data.error) throw new Error(data.error)
 
-            // console.log(data.serverid) // might redirect to the main server that he joined in
+            console.log(data) // might redirect to the main server that he joined in
+            window.location.assign(`http://localhost:5173/channels/${data}`) // still having problems with this
         } catch (error: any) {
+            console.log(error)
             setNotValid(true)
         } finally {
             setLoading(false)

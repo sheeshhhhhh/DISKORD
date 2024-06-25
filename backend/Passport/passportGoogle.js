@@ -33,9 +33,9 @@ passport.use(new GoogleStrategy({
                 VALUES ($1, $2, $3, $4)
             `, [profile?.displayName, profile?.displayName, 'Oauth', profile?.id])
 
-            const newAccount = createUser.rows[0]
+            const newAccount = await createUser.rows[0]
 
-            if(!newAccount) return  cb(err, undefined)
+            if(!newAccount) return  cb(null, false)
 
             return cb(null, newAccount)
         }

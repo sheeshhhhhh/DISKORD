@@ -26,7 +26,7 @@ export const getSenderSocketId = (SenderId) => {
 const userSocketMap = {} // { userid: socketId}
 
 io.on('connection', (socket) => {
-//    console.log('user has connected ', socket.id)
+    //console.log('user has connected ', socket.id)
 
     const userId = socket.handshake.query.userId // getting the userId through the first contact(handshake)
     if(userId !== undefined) userSocketMap[userId] = socket.id // adding the user to the userSocketMap with socked.id
@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
     socket.on('JoinRoom', room => {
         // room name is base on channel id. all channel id is unique even though in different servers 
         socket.join(room)
-        console.log(`${userId} joined room: ${room}`);
+        console.log(`${socket.id} joined room: ${room}`);
     })
 
     socket.on('LeaveRoom', room => {
@@ -46,7 +46,6 @@ io.on('connection', (socket) => {
 
     // when user disconnect this will  be triggered
     socket.on('disconnect',  () => {
-        console.log('user has disconnected ', socket.id)
 
         delete userSocketMap[userId]
     })

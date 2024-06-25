@@ -37,10 +37,11 @@ const Messages: React.FC<ComponentMessageType> = ({ channelId }) => {
 
     socket.on('message', handleNewMessage)
 
-    socket.emit('JoinRoom', channelId.toString())
+    socket.emit('JoinRoom', channelId.toString()) 
 
     return () => {
         socket.off('message', handleNewMessage);
+        socket.emit('LeaveRoom', channelId.toString())
     };
   }, [socket, channelId, previd])
 

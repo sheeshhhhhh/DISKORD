@@ -5,6 +5,7 @@ import ChannelsMainChat from './ServerChannels/ChannelsMainChat';
 import { FaHashtag, FaPlus } from 'react-icons/fa6';
 import AddChannelsModal from './ServerChannels/AddChannelsModal';
 import lastelementofURL from '@/util/lastElementofURL';
+import ChannelsChatSettings from './ChannelsChatSettings/ChannelsChatSettings';
 
 export type channelsType = {
   id: number,
@@ -26,6 +27,7 @@ export type serverinfo = {
 const ChannelsChat = () => {
   const [server, setServer] = useState<serverinfo | undefined>()
   const [channelselected, setChannelSelected] = useState<number>(0)
+  const [openSettings, setOpenSettings] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const { id } = useParams()
   
@@ -54,13 +56,15 @@ const ChannelsChat = () => {
  
 
   const handleserverSetting = () => {
-    // do later
+    setOpenSettings(prev => !prev)
   }
   
 
   return (
     <div className='flex flex-row h-screen w-full'>
-      <div className='flex flex-col min-w-[240px] w-[240px] bg-gray-800'>
+      <div className='flex flex-col min-w-[240px] w-[240px] bg-gray-800 relative'>
+        <ChannelsChatSettings serverId={id}
+        openSettings={openSettings} channelId={Number(selectedchannel)}  />
         <nav className=' flex flex-col flex-1'>
           <div className='flex items-center justify-start h-[48px] border-b-[1px] border-gray-900
           hover:bg-gray-700 py-3 px-4'>

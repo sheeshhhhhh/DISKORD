@@ -20,6 +20,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        'superdark' : '#111214',
         'highdarkgray': '#1e1f22',
         'lightgray': '#313338',
         'darkgray': '#2b2d31',

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Separator } from '@/components/ui/separator'
 import { userAuthContext } from '@/Context/AuthContext'
 import AddServerButton from '../AddServer/AddServerButton'
+import Servericons from '@/assets/UserIcons.svg'
 
 export type serversinfo = {
     id: number,
@@ -51,7 +52,8 @@ const ChannelServers = ({ handleServerModalOpen } : any) => {
                     <Link className='flex justify-center items-center size-[50px]
               rounded-full hover:rounded-[16px] transition-all duration-500 '
                     to={'/channels/' + info.id}>
-                        <img src={info.servericons} className='size-[48px] rounded-full hover:rounded-2xl' />
+                        <img src={info.servericons ? info.servericons : Servericons} 
+                        className='size-[48px] rounded-full hover:rounded-2xl bg-lightgray' />
                     </Link>
                     {/* make sure to do the animation of title showing up when hovered */}
                 </div>
