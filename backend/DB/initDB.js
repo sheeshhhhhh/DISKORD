@@ -23,7 +23,11 @@ const createTables = async () => {
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(40) NOT NULL,
                 username VARCHAR(255) NOT NULL,
-                password VARCHAR(255),
+                email TEXT,
+                password VARCHAR(255), 
+                usericons TEXT,
+                bannercolor TEXT,
+                aboutme VARCHAR(150),
                 auth_type auth_type,
                 oauth_google_id VARCHAR(100) UNIQUE
             );

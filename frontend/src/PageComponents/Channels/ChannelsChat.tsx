@@ -6,6 +6,8 @@ import { FaHashtag, FaPlus } from 'react-icons/fa6';
 import AddChannelsModal from './ServerChannels/AddChannelsModal';
 import lastelementofURL from '@/util/lastElementofURL';
 import ChannelsChatSettings from './ChannelsChatSettings/ChannelsChatSettings';
+import CantFindChannel from './ServerChannels/CantFindChannel';
+import UserArea from '../UserSettings/UserArea';
 
 export type channelsType = {
   id: number,
@@ -74,32 +76,36 @@ const ChannelsChat = () => {
                 <MdKeyboardArrowDown size={25} className='text-gray-200' />
               </button>
           </div>
-          <div className='flex flex-col items-center pr-2 mt-3'>
-            <div className='flex flex-row justify-between px-3 mb-2 cursor-pointer w-full group'>
-              <h2 className='text-slate-400 text-sm font-bold uppercase group-hover:text-white'>Add Channel</h2>
-              <button onClick={() => setOpenModal(true)} disabled={openModal}
-              ><FaPlus size={15} className='text-slate-400 group-hover:text-white'/></button>
+          <div className='flex flex-col justify-between h-full'>
+            <div className='flex flex-col items-center pr-2 mt-3'>
+              <div className='flex flex-row justify-between px-3 mb-2 cursor-pointer w-full group'>
+                <h2 className='text-slate-400 text-sm font-bold uppercase group-hover:text-white'>Add Channel</h2>
+                <button onClick={() => setOpenModal(true)} disabled={openModal}
+                ><FaPlus size={15} className='text-slate-400 group-hover:text-white'/></button>
+              </div>
+              {server?.channels.map((channel: channelsType, idx) => {
+                  const selected = Number(selectedchannel) == channel.id
+                  return(
+                    <Link 
+                    onClick={() => setChannelSelected(idx)}
+                    to={`../${id}/${channel.id}`}
+                    key={channel.id}
+                    className={`flex ml-2 w-full max-w-[220px] h-[32px] py-[1px] rounded-md px-2
+                    items-center ${selected && 'bg-gray-700'}`}>
+                      <FaHashtag size={15} className={`text-gray-400 mr-2 ${selected && 'text-white'}`} />
+                      <h2 className={`text-slate-400 font-semibold ${selected && 'text-white'}`}>{channel.name}</h2>
+                    </Link>
+                  )
+              })}
             </div>
-            {server?.channels.map((channel: channelsType, idx) => {
-                const selected = Number(selectedchannel) == channel.id
-                return(
-                  <Link 
-                  onClick={() => setChannelSelected(idx)}
-                  to={`../${id}/${channel.id}`}
-                  key={channel.id}
-                  className={`flex ml-2 w-full max-w-[220px] h-[32px] py-[1px] rounded-md px-2
-                   items-center ${selected && 'bg-gray-700'}`}>
-                    <FaHashtag size={15} className={`text-gray-400 mr-2 ${selected && 'text-white'}`} />
-                    <h2 className={`text-slate-400 font-semibold ${selected && 'text-white'}`}>{channel.name}</h2>
-                  </Link>
-                )
-            })}
+            <UserArea />
           </div>
         </nav>
         <AddChannelsModal id={id} setOpenModal={setOpenModal}  open={openModal} />
       </div>
       <Routes>
         <Route path=':channelid' element={<ChannelsMainChat id={id}  channels={server?.channels} />} />
+        <Route path='*' element={<CantFindChannel serverIcons={server?.serverIcons} title={server?.title} />} />
       </Routes>
     </div>
   )

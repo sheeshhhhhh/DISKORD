@@ -1,28 +1,17 @@
 import express from 'express'
 import multer from 'multer'
-import crypto from 'crypto'
-
 
 import { pool } from "../DB/db.js"
 import { ensureAuthenticated } from '../utils/ensureAuthenticated.js'
 import handleError from '../utils/handleserverError.js'
+import diskstorage from '../utils/multerDiskStrorage.js'
 
 const router = express.Router()
 // naka code palang di pa natetest dahil wala pang frontend
 // for testing pa 
 // also the create server is also for testing paden
 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-      return cb(null, 'backend/uploads/serverIcons')  
-    },
-    filename: function(req, file, cb) {
-        const photoid = crypto.randomBytes(10).toString('hex')
-        return cb(null, `${photoid}_${file.originalname}`)
-    }
-})
-
-const upload = multer({ storage: storage})
+const upload = multer({ storage: diskstorage('backend/uploads/serverIcons')})
 
 router.post("/createServer", ensureAuthenticated, upload.single('serverIcons'), async (req, res) => {
     const client = await pool.connect()

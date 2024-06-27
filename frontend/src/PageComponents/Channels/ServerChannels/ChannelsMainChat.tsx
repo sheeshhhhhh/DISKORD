@@ -19,7 +19,7 @@ const ChannelsMainChat: React.FC<ChannelsMainChatType> = ({ channels, id }) => {
     const channel = channels && channels.find(channel => Number(channelid) == channel.id)
 
 
-    if(!channel) return <CantFindChannel />
+    if(!channel) return 
 
 
     return (

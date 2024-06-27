@@ -67,11 +67,14 @@ router.get('/logout', (req, res) => {
 // this is responsible for getting the user authenticated and making sure that the user is authenticated
 router.get("/check", (req, res) => {
     if(req.isAuthenticated()) {
+        // console.log(req.user)
         res.send({ user: {
             auth_type: req.user.auth_type,
             name: req.user.name,
-            id: req.user.id
+            id: req.user.id,
+            usericons: req.user?.usericons | null,
         }})
+        // put other things later
     } else { 
         res.send({ user: undefined})
     }

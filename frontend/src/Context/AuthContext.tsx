@@ -1,4 +1,3 @@
-import { useLocalStorage } from "@/util/useLocalStorage";
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from "react"
 
 // this is use for the type of the users
@@ -6,6 +5,7 @@ export type User = {
     id: string, // don't know yet later
     name: string | undefined,
     auth_type: string,
+    usericons: string | number,
 }
 
 // this is use for context typing
@@ -40,6 +40,7 @@ export default function AuthContextProvider({children}: PropsWithChildren) {
                 
                 if(data.error) throw new Error(data.error)
                 setUser(data?.user)
+                console.log(data.user)
             } catch (error) {
                 console.log(error)
                 console.log("error in the checkUser")

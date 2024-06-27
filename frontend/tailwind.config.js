@@ -20,6 +20,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        'hovercolor' : '#404249',
         'superdark' : '#111214',
         'highdarkgray': '#1e1f22',
         'lightgray': '#313338',
