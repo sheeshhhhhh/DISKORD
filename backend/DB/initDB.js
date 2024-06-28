@@ -17,17 +17,14 @@ const createTables = async () => {
                 END IF;
             END
             $$;`)
+            
 
         const createTableQuery = `
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(40) NOT NULL,
                 username VARCHAR(255) NOT NULL,
-                email TEXT,
                 password VARCHAR(255), 
-                usericons TEXT,
-                bannercolor TEXT,
-                aboutme VARCHAR(150),
                 auth_type auth_type,
                 oauth_google_id VARCHAR(100) UNIQUE
             );
@@ -36,6 +33,15 @@ const createTables = async () => {
 
         await pool.query(createTableQuery)
 
+        const createUserInfoTable = await pool.query(`
+            CREATE TABLE IF NOT EXISTS userinfo (
+                user_id INTEGER REFERENCES servers(id) ON DELETE CASCADE,
+                usericons TEXT DEFAULT NULL,
+                bannercolor TEXT DEFAULT NULL,
+                aboutme VARCHAR(150) DEFAULT NULL,
+                email TEXT DEFAULT NULL
+            );
+        `)
 
         console.log("Successfully create The users table")
     } catch (error) {

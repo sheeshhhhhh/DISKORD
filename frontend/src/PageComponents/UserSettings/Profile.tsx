@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 const Profile = () => {
   const [type, setType] = useState<'UserProfile' | 'ServerProfile'>('UserProfile')
   const [color, setColor] = useState<any>()
+
+  
   
   return (
     <div className='py-[60px] pl-10 pr-[10px] w-[660px]'>
@@ -79,6 +81,12 @@ const Profile = () => {
                 <h3 className='font-bold text-slate-400 text-xs uppercase font-sans mb-2'>
                   About Me
                 </h3>
+                <p className='text-sm text-slate-400 font-sans mb-4'>
+                  You can use markdowns and links you'd like.
+                </p>
+                <div>
+
+                </div>
               </div>
             </div>
 

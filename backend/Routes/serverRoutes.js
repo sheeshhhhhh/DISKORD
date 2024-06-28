@@ -5,6 +5,7 @@ import { pool } from "../DB/db.js"
 import { ensureAuthenticated } from '../utils/ensureAuthenticated.js'
 import handleError from '../utils/handleserverError.js'
 import diskstorage from '../utils/multerDiskStrorage.js'
+import crypto from 'crypto'
 
 const router = express.Router()
 // naka code palang di pa natetest dahil wala pang frontend

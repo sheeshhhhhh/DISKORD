@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import SettingSidebar from './SettingSidebar'
-import MyAccount from './MyAccount'
+import MyAccount from './My Account/MyAccount'
 import Profile from './Profile'
 
 const SettingsModal = ({ 
@@ -16,7 +16,7 @@ const SettingsModal = ({
     if(!open) return null
 
     return (
-        <div className='w-full h-full fixed bg-lightgray flex z-30
+        <div className='w-full h-full fixed bg-lightgray flex z-20
         justify-center items-center top-0 left-0'>
             <div className='w-full h-full bg-lightgray flex'>
                 <div className='flex justify-end w-[669px] bg-darkgray'>
@@ -25,7 +25,7 @@ const SettingsModal = ({
                     </div>
                 </div>
                 <div className='flex justify-start w-[1251px] h-full overflow-y-auto custom-scrollbar'>
-                    {category === 'My Account' && <MyAccount />}
+                    {category === 'My Account' && <MyAccount setCategory={setCategory} />}
                     {category === 'Profile'    && <Profile />  }
                     <div>
                         <button onClick={() => setOpen(false)}

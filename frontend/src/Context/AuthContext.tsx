@@ -40,7 +40,6 @@ export default function AuthContextProvider({children}: PropsWithChildren) {
                 
                 if(data.error) throw new Error(data.error)
                 setUser(data?.user)
-                console.log(data.user)
             } catch (error) {
                 console.log(error)
                 console.log("error in the checkUser")

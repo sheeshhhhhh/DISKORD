@@ -7,7 +7,7 @@ const createServers = async () => {
         await pool.query(`
             CREATE TABLE IF NOT EXISTS Servers (
                 id SERIAL PRIMARY KEY NOT NULL,
-                owner INTEGER REFERENCES users(id) NOT NULL,
+                owner INTEGER REFERENCES users(id) ON DELETE CASCADE,
                 title VARCHAR(40) NOT NULL,
                 headerPhoto VARCHAR(255),
                 serverIcons VARCHAR(255)

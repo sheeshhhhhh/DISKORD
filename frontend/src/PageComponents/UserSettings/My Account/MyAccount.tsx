@@ -1,8 +1,9 @@
-import userIcons from '@/assets/UserIcons.svg'
-import { useEffect } from 'react'
-import MyAccountDisplay from '@/assets/SettingsDisplay.svg'
 
-const MyAccount = () => {
+import { Dispatch, SetStateAction, useEffect } from 'react'
+import MyAccountDisplay from '@/assets/SettingsDisplay.svg'
+import AccountProfile from './AccountProfile'
+
+const MyAccount = ({ setCategory}: { setCategory: Dispatch<SetStateAction<string>> }) => {
     // all the logic will later be applied
 
     useEffect(() => {
@@ -11,61 +12,15 @@ const MyAccount = () => {
         }
     }, [])
 
+    
+
     return (
             <div className='w-[740px] py-[60px] px-10 min-h-[1180px]'>
                 <h2 className='mb-5 text-xl font-bold text-white'>
                     My Account
                 </h2>
 
-                <div className='w-[660px] h-[473px] bg-highdarkgray rounded-xl relative'>
-                    <div className={`h-[100px] bg-slate-200 rounded-t-lg`} aria-label='banner-color'></div>
-                    <div className='h-[76px] pt-4 pr-4 pl-[120px]'>
-                        <div className='absolute top-[75px] left-[15px] size-[95px] p-2 bg-highdarkgray rounded-full'>
-                            <div 
-                            aria-label='user background' 
-                            className='bg-red-600 w-full h-full rounded-full flex items-center justify-center'>
-                                <img src={userIcons}  />
-                            </div>
-                        </div>
-                        <div className='flex items-start justify-between'>
-                            <h2 className='text-white font-semibold text-lg'>name</h2>
-                            <button className='py-[2px] px-4 w-[131px] h-[32px] text-sm text-white font-normal rounded-sm bg-indigo-500'>
-                                Edit User Profile
-                            </button>
-                        </div>
-                    </div>
-                    <div className='p-4 bg-darkgray h-[270px] m-4 mt-2 rounded-lg'>
-                        <div>
-                            <div className='flex justify-between mb-6'>
-                                <div>
-                                    <h2 className='text-slate-400 font-bold text-xs uppercase font-sans'>Display Name</h2>
-                                    <p className='text-white'>renn</p>
-                                </div>
-                                <button className='my-1 py-[2px] px-4 bg-hovercolor text-slate-200 rounded-sm'>
-                                    Edit
-                                </button>
-                            </div>
-                            <div className='flex justify-between mb-6'>
-                                <div>
-                                    <h2 className='text-slate-400 font-bold text-xs uppercase font-sans'>Username</h2>
-                                    <p className='text-white'>renn0284</p>
-                                </div>
-                                <button className='my-1 py-[2px] px-4 bg-hovercolor text-slate-200 rounded-sm'>
-                                    Edit
-                                </button>
-                            </div>
-                            <div className='flex justify-between mt-6'>
-                                <div>
-                                    <h2 className='text-slate-400 font-bold text-xs uppercase font-sans'>Email</h2>
-                                    <p className='text-white'>renatodsantosjr9@gmail.com</p>
-                                </div>
-                                <button className='my-1 py-[2px] px-4 bg-hovercolor text-slate-200 rounded-sm'>
-                                    Edit
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <AccountProfile setCategory={setCategory} />
 
                 <div className='mt-10 relative'>
                     <div className='h-[44px]'>

@@ -17,7 +17,6 @@ const SettingSidebar = ({
         <div className='flex flex-col gap-[1px]'>
             {sidebarCategory?.map((info) => {
                 const isSelected = info === category
-                console.log(isSelected)
                 return (
                     <div 
                     onClick={() => setCategory(info)}

@@ -5,6 +5,7 @@ import diskstorage from '../utils/multerDiskStrorage.js'
 import { ensureAuthenticated } from '../utils/ensureAuthenticated.js'
 import handleError from '../utils/handleserverError.js'
 import { pool } from '../DB/db.js'
+import bcrypt from 'bcrypt'
 
 const router = express.Router()
 // WARNING !!! di pa to tested so make sure to test this after makagawa ng frontend!!!
@@ -12,6 +13,39 @@ const router = express.Router()
 // THIS IS THE UPDATE ON EVERY SINGLE ONE 
 
 const upload = multer({ storage: diskstorage('backend/uploads/userIcons')})
+//get AccountProfile
+router.get('/getAccountProfile', ensureAuthenticated, async (req, res) => {
+    try {
+        const userId = req.user?.id
+
+        if(!userId) return handleError(res, "failed to get AccountProfileInfo")
+        
+        const getProfileInfo = await pool.query(`
+            SELECT 
+            u.id AS user_id, 
+            u.name, 
+            u.username, 
+            COALESCE(ui.usericons, '') AS usericons, 
+            COALESCE(ui.bannercolor, '') AS bannercolor, 
+            COALESCE(ui.email, '') AS email 
+            FROM 
+                users u
+            LEFT JOIN 
+                userinfo ui ON u.id = ui.user_id
+            WHERE 
+                u.id = $1;
+        `, [userId]) // reference https://chatgpt.com/c/4823fabb-e799-4ffe-a975-28fe9535c788
+        const profileInfo = getProfileInfo.rows[0]
+        
+        if(!profileInfo)  return handleError(res, "failed to get AccountProfileInfo")
+
+        res.status(200).json(profileInfo)
+    } catch (error) {
+        console.log(error)
+        handleError(res, '', 500, "/getAccountProfile")
+    }
+})
+
 // change password
 router.post('/changePassword', ensureAuthenticated, async (req, res) => {
     try {
@@ -40,8 +74,9 @@ router.post('/changePassword', ensureAuthenticated, async (req, res) => {
 // set email
 router.post('/changeEmail' , ensureAuthenticated, async (req, res) => {
     try {
-        const { email } = req.body
+        const { email, password } = req.body
         const userId = req.user?.id
+        const currentPassword = req.user?.password
     
         if(!email) return handleError(res, "please fill in an email", 400)
     
@@ -66,21 +101,37 @@ router.post('/changeEmail' , ensureAuthenticated, async (req, res) => {
 // set useranme if local auth
 router.post('/changeUsername', ensureAuthenticated, async (req, res) => {
     try {
-        const userId = res.user?.id
-        const { username } = req.body
+        const userId = req.user?.id
+        const userpassword = req.user?.password
+        const { username, password } = req.body
+        console.log(req.user)
+        // verifying the password using the password from the session and password sent
+        const verifypassword = bcrypt.compareSync(password, userpassword)
+        if(!verifypassword) return handleError(res, "wrong password", 400)
 
-        if(!username) return handleError(res, "please fill the username form", 400)
-        
         const changedUsername = await pool.query(`
-            UPDATE users 
+            UPDATE users
             SET username = $1
-            WHERE id = $2
+            WHERE id = $2 
+            RETURNING *;
         `, [username, userId])
-        
-        if(!changedUsername.rows[0]) return handleError(res, "Failed to changed username", 400)
 
-        res.status(200).json(changedUsername.rows[0])
+        const updatedinfo = changedUsername.rows[0]
+
+        if(!updatedinfo) return handleError(res, "Failed to update username", 400)
+        
+        // this is gonna save the infos to the sessions making sure that it is updated
+        req.user = updatedinfo // getting the passport session which is being get to the database
+        req.session.passport.user = updatedinfo // saving to the database
+        req.session.save((err) => {
+            if (err) {
+                console.error('Failed to save session:', err);
+                return res.status(500).json({ error: 'Failed to save session' });
+            }
+            res.status(200).json(updatedinfo.username);
+        });
     } catch (error) {
+        console.log(error)
         handleError(res, "", 500, '/changeUsername')
     }
 })
