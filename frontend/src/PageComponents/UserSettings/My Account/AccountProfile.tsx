@@ -84,7 +84,7 @@ const AccountProfile = ({ setCategory } : { setCategory: Dispatch<SetStateAction
     const handleEmailEdit = async (email: string, password: string): Promise<string> => {
         if(!email || !password) return "Please fill in the fields"
         try {
-            const res: Response = await fetch("", {
+            const res: Response = await fetch("http://localhost:5000/api/user/changeEmail", {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json'
@@ -99,7 +99,12 @@ const AccountProfile = ({ setCategory } : { setCategory: Dispatch<SetStateAction
             const data = await res.json()
 
             if(data.error) throw new Error(data.error)
-
+            
+            setProfileInfo({ 
+                ...profileInfo,
+                email: data.email
+            })
+            
             return "Successfully updated email"
         } catch (error: any) {
             console.log(error)

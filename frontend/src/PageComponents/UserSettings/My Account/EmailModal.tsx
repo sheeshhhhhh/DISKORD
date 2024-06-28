@@ -24,6 +24,7 @@ const EmailModal = ({
 
   const handleDone = async () => {
     const message = await handleEmailEdit(email, password)
+    console.log(message)
     if (message === "Successfully updated email") {
       return setEmailModal(false)
     }
@@ -34,7 +35,7 @@ const EmailModal = ({
     <div role='dialog' aria-modal={true}
     className='fixed flex w-full h-full inset-0 justify-center items-center z-50'>
       <div className='w-full h-full bg-black opacity-50 absolute'></div>
-      {/* make sure to have different modal so that it won't affact the main container */}
+      {/* make sure to have different modal background so that it won't affact the main container */}
       <div className='bg-lightgray w-[440px] flex flex-col rounded-lg z-[60] opacity-100'>
         <div className='px-4 py-6 flex flex-col items-center relative'>
           <h2 className='text-2xl text-white font-bold font-sans'>Change or Add Email</h2>
@@ -69,7 +70,7 @@ const EmailModal = ({
               type="password"  />
             </div>
           </div>
-          {message && <h2 className='text-white'>{message}</h2>}
+          {message && <h2 className='text-white mt-1'>{message}</h2>}
         </div>
         <div className='p-4 h-[70px] rounded-b-lg bg-darkgray flex justify-end'>
 

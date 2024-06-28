@@ -51,23 +51,41 @@ router.post('/changePassword', ensureAuthenticated, async (req, res) => {
     try {
         const { password, newPassword } = req.body
         const user = req.user
-        if(!user) return handleError(res, "Failed to changed password")
+        console.log(user)
+
         // we are checking if oauth because we can't change password if it is because the account is not stored
         // in the data base but rather in the Oauth provider it just gives us a token
         if(user.auth_type === 'Oauth') return handleError(res, "Oauth can't Change password")
+        // verifying if password is correct
+        const verifiedPassword = bcrypt.compareSync(password, user.password) 
+        if(!verifiedPassword) return handleError(res, "Wrong Password", 400)
 
+        const encryptedpassword =  bcrypt.hashSync(newPassword, 10);
+        const hashpassword = encryptedpassword.trim()
         // we are trying to change password 
         // and finding the user and checking if the previous password correct in WHERE
         const changePassword = await pool.query(`
             UPDATE users
             SET password = $1
-            WHERE id = $2 AND password = $3
-        `, [newPassword, user.id, password])
+            WHERE id = $2
+            RETURNING *;
+        `, [hashpassword, user.id])
+        const updateduser = changePassword.rows[0]
 
-        if(!changePassword.rows[0]) return handleError(res, "Failed to changed password")
-        
-        res.status(200).json(changePassword.rows[0])
+        if(!updateduser) return handleError(res, "Failed to changed password")
+
+        // saving the session and handling error and responding to the request
+        req.user = updateduser
+        req.session.passport.user = updateduser
+        req.session.save((err) => {
+            if (err) {
+                console.error('Failed to save session:', err);
+                return res.status(500).json({ error: 'Failed to save session' });
+            }
+            res.status(200).json(updateduser.password);
+        })
     } catch (error) {
+        console.log(error)
         handleError(res, "", 500, "/changepassword")
     }
 })
@@ -76,25 +94,29 @@ router.post('/changeEmail' , ensureAuthenticated, async (req, res) => {
     try {
         const { email, password } = req.body
         const userId = req.user?.id
-        const currentPassword = req.user?.password
+        const userpassword = req.user?.password
     
         if(!email) return handleError(res, "please fill in an email", 400)
     
+        const verifiedEmail = bcrypt.compareSync(password, userpassword)
+
+        if(!verifiedEmail) return handleError(res, "Wrong Password", 400)
         // ref: https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-upsert/
         // upsert is about inserting something. but if it already exist then we just update
         // we will know base on CONFLICT
         const upsertemail = await pool.query(`
-            INSERT INTO users (email)
-            VALUES ($1)
-            WHERE id = $2
-            ON CONFLICT (email)
+            INSERT INTO userinfo (email, user_id)
+            VALUES ($1, $2)
+            ON CONFLICT (user_id)
             DO UPDATE SET email = $1
+            RETURNING (email);
         `, [email, userId])
     
-        if(!upsertemail.rows[0]) return handleError(res, "failed to update emaik", 400)
+        if(!upsertemail.rows[0]) return handleError(res, "failed to update email", 400)
         
         res.status(200).json(upsertemail.rows[0])
     } catch (error) {
+        console.log(error)
         handleError(res, "", 500, '/changeEmail')
     }
 })

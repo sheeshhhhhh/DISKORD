@@ -70,7 +70,7 @@ const UsernameModal = ({
                     type="password"  />
                     </div>
                 </div>
-                {message && <h2 className='text-white'>{message}</h2>}
+                {message && <h2 className='text-white mt-1'>{message}</h2>}
             </div>
             <div className='p-4 h-[70px] rounded-b-lg bg-darkgray flex justify-end'>
 

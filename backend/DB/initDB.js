@@ -39,7 +39,8 @@ const createTables = async () => {
                 usericons TEXT DEFAULT NULL,
                 bannercolor TEXT DEFAULT NULL,
                 aboutme VARCHAR(150) DEFAULT NULL,
-                email TEXT DEFAULT NULL
+                email TEXT DEFAULT NULL,
+                UNIQUE(user_id)
             );
         `)
 
