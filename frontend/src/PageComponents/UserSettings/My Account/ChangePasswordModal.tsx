@@ -1,5 +1,4 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { set } from 'react-hook-form'
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { RxCross2 } from 'react-icons/rx'
 
 type changePasswordType = {

@@ -58,6 +58,7 @@ app.use(cors({
 
 // for static routes
 app.use('/uploads/serverIcons', express.static(__dirname + '/uploads/serverIcons'))
+app.use('/uploads/userIcons', express.static(__dirname + '/uploads/userIcons'))
 
 // ROUTES 
 app.use("/api/auth", authRoutes)

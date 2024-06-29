@@ -4,7 +4,6 @@ import createServers from './Servers.js'
 import createSession from './Session.js'
 
 const createTables = async () => {
-
     try {
         
         // define the table here so that it is more manageable 

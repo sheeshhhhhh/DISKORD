@@ -7,8 +7,8 @@ import EmailModal from './EmailModal'
 
 type profileInfoType = {
     user_id: number,
-    userIcons: string,
-    bannerColor: string,
+    usericons: string,
+    bannercolor: string,
     name: string,
     username: string,
     email: string,
@@ -20,8 +20,8 @@ const AccountProfile = ({ setCategory } : { setCategory: Dispatch<SetStateAction
     const [emailModal, setEmailModal] = useState<boolean>(false)
     const [ profileInfo, setProfileInfo ] = useState<profileInfoType>({
         user_id: user?.id,
-        userIcons: '',
-        bannerColor: '',
+        usericons: '',
+        bannercolor: '',
         name: '',
         username: '',
         email: '',
@@ -115,13 +115,14 @@ const AccountProfile = ({ setCategory } : { setCategory: Dispatch<SetStateAction
 
     return (
         <div className='w-[660px] h-[473px] bg-highdarkgray rounded-xl relative z-10'>
-            <div className={`h-[100px] bg-slate-200 rounded-t-lg`} aria-label='banner-color'></div>
+            <div style={{ backgroundColor: profileInfo.bannercolor }}
+            className={`h-[100px] bg-slate-200 rounded-t-lg`} aria-label='banner-color'></div>
             <div className='h-[76px] pt-4 pr-4 pl-[120px]'>
                 <div className='absolute top-[75px] left-[15px] size-[95px] p-2 bg-highdarkgray rounded-full'>
                     <div 
                     aria-label='user background' 
                     className='bg-red-600 w-full h-full rounded-full flex items-center justify-center'>
-                        <img src={profileInfo.userIcons ? profileInfo.userIcons : userIcons}  />
+                        <img src={profileInfo.usericons ? profileInfo.usericons : userIcons} className='rounded-full' />
                     </div>
                 </div>
                 <div className='flex items-start justify-between'>

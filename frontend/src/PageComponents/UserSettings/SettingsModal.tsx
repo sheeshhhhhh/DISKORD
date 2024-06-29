@@ -1,7 +1,7 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
-import SettingSidebar from './SettingSidebar'
+import { Dispatch, SetStateAction, useState } from 'react'
 import MyAccount from './My Account/MyAccount'
-import Profile from './Profile'
+import Profile from './Profile/Profile'
+import SettingSidebar from './SettingSidebar'
 
 const SettingsModal = ({ 
     open, 

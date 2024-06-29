@@ -188,41 +188,76 @@ router.get('/getProfile', ensureAuthenticated, async (req, res) => {
         const userId = req.user?.id
 
         const getUserProfile = await pool.query(`
-            SELECT userIcons, name, aboutme, bannercolor
-            FROM users
-            WHERE id = $1
+            SELECT u.id, u.name, u.username,
+            COALESCE (ui.usericons, '') AS usericons,
+            COALESCE (ui.bannercolor, '') AS bannercolor,
+            COALESCE (ui.aboutme, '') AS aboutme
+            FROM users u 
+            LEFT JOIN userinfo ui ON u.id = ui.user_id
+            WHERE u.id = $1;
         `, [userId])
 
         if(!getUserProfile.rows[0]) return handleError(res, "Failed to get userProfile", 400)
 
         res.status(200).json(getUserProfile.rows[0])
     } catch (error) {
+        console.log(error)
         handleError(res, "", 500, "/getProfile")
     }
 })
 
 router.post('/editProfile', upload.single('userIcons') ,ensureAuthenticated, async (req, res) => {
+    const client = await pool.connect()
     try {
         const userId = req.user?.id
         const file = req.file
         const { name, aboutme, bannercolor } = req.body
+        const userIcons = req.body.userIcons
 
-        const userIconsLink = file ? 'http://localhost:5000/uploads/userIcons' + file.filename : null
+        const userIconsLink = file ? 'http://localhost:5000/uploads/userIcons/' + file.filename : userIcons
+
+        // console.log(userIconsLink)
+        // console.log(name)
+        // console.log(aboutme)
+        // console.log(bannercolor)
+
+        // START OF THE pg TRANSACTION
+        await client.query('BEGIN')
+
+        const updateNamequery = await pool.query(`
+            UPDATE users
+            SET name = $1
+            WHERE id = $2
+            RETURNING name, id
+        `, [name, userId])
 
         const editProfilequery = await pool.query(`
-            UPDATE users 
-            SET name = $1,
-            aboutme = $2,
-            bannercolor = $3
-            userIcons = $4
-            WHERE id = $5
-        `, [name, aboutme, bannercolor, userIconsLink, userId])
+            UPDATE userinfo 
+            SET 
+                aboutme = $1,
+                bannercolor = $2,
+                usericons = $3
+                WHERE user_id = $4
+            RETURNING aboutme, bannercolor,  usericons
+        `, [aboutme, bannercolor, userIconsLink, userId])
 
-        if(!editProfilequery.rows[0]) return handleError(res, "Failed to edit profile", 400)
+        if(!editProfilequery.rows[0] || !updateNamequery.rows[0]) throw new Error("Failed to update Profile")
 
-        res.status(200).json(editProfilequery.rows[0])
+        await client.query('COMMIT')
+
+        res.status(200).json({
+            aboutme: editProfilequery.rows[0].aboutme,
+            bannercolor: editProfilequery.rows[0].bannercolor,
+            usericons: editProfilequery.rows[0].usericons,
+            name: updateNamequery.rows[0].name,
+            id: updateNamequery.rows[0].id
+        })
     } catch (error) {
+        console.log(error)
+        await client.query('ROLLBACK')
         handleError(res, "", 500, '/editProfile')
+    } finally {
+        await client.release()
     }
 })
 
